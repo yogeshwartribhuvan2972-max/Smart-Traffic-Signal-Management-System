@@ -250,7 +250,7 @@ http://127.0.0.1:5000
 ### ⚡ Independent Mode
 
 ![Independent Mode](independent%20mode.png)
-```
+
 ---
 ## 🎥 Project Demo
 
