@@ -141,43 +141,70 @@ Smart-Traffic-Signal-Management-System/
     │
     └── templates/
         └── index.html
+```
+---
 
-📄 File Description
-app.py
+## 📄 File Description
+
+### `app.py`
+
 Main Flask application responsible for running the web server, managing routes, streaming processed traffic frames, and providing traffic status information to the dashboard.
 
-camera.py
+### `camera.py`
+
 Handles traffic video processing and vehicle detection using YOLOv8 and OpenCV.
 
-core_logic.py
+### `core_logic.py`
+
 Contains the main traffic signal control logic, including signal priority, dynamic timing, and traffic management rules.
 
-junctions_config.py
+### `junctions_config.py`
+
 Stores configuration details for junctions and traffic lanes.
 
-templates/index.html
+### `templates/index.html`
+
 Contains the main structure of the traffic monitoring dashboard.
 
-static/style.css
+### `static/style.css`
+
 Contains styling and visual design for the web dashboard.
 
-static/script.js
+### `static/script.js`
+
 Handles dashboard interactions and dynamic updates.
 
-requirements.txt
+### `requirements.txt`
+
 Contains the Python libraries required to run the project.
 
-⚙️ Installation and Setup
-1. Clone the Repository
-git clone https://github.com/yogeshwartribhuvan2972-max/Smart-Traffic-Signal-Management-System.git
-2. Open the Project Directory
-cd Smart-Traffic-Signal-Management-System/stm7
-3. Install Required Libraries
-pip install -r requirements.txt
-4. Add Traffic Video Files
+---
 
-Add the required traffic video files inside a videos folder.
-Example:
+## ⚙️ Installation and Setup
+
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/yogeshwartribhuvan2972-max/Smart-Traffic-Signal-Management-System.git
+```
+
+### 2. Open the Project Directory
+
+```bash
+cd Smart-Traffic-Signal-Management-System/stm7
+```
+
+### 3. Install Required Libraries
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Add Traffic Video Files
+
+Add the required traffic video files inside a `videos` folder.
+
+```text
 videos/
 ├── A_north.mp4
 ├── A_south.mp4
@@ -191,52 +218,81 @@ videos/
 ├── C_south.mp4
 ├── C_east.mp4
 └── C_west.mp4
-5. Run the Application
+```
+
+### 5. Run the Application
+
+```bash
 python app.py
-6. Open the Dashboard
+```
+
+### 6. Open the Dashboard
 
 Open the local Flask server address displayed in the terminal.
 
-Example:
-
+```text
 http://127.0.0.1:5000
+```
 
-A demonstration video of the complete working system will be added here.
-(https://drive.google.com/drive/folders/12MxfN-IMHDk0aalXQ8nYp0s3n9G8sp1o)
+---
 
-🚑 Emergency Override Prototype
+## 🎥 Project Demo
+
+A demonstration of the complete working Smart Traffic Signal Management System is available on Google Drive.
+
+[▶️ View Project Demo and Files](https://drive.google.com/drive/folders/12MxfN-IMHDk0aalXQ8nYp0s3n9G8sp1o)
+
+---
+
+## 🚑 Emergency Override Prototype
+
 The project includes emergency override logic as a prototype traffic-control feature.
 
 The current implementation focuses primarily on standard vehicle detection and adaptive traffic signal management.
 
 A specialized emergency vehicle detection model can be integrated in future versions for more reliable ambulance and fire-truck detection.
 
-📈 Future Improvements
-Real-time CCTV camera integration
-Specialized emergency vehicle detection model
-Traffic congestion prediction using Machine Learning
-Cloud-based traffic data storage
-Advanced traffic analytics dashboard
-Real-time database integration
-IoT-based physical traffic signal integration
-Mobile application for traffic monitoring
-Deployment on cloud infrastructure
+---
 
-🎓 Academic Project
+## 📈 Future Improvements
+
+- Real-time CCTV camera integration
+- Specialized emergency vehicle detection model
+- Traffic congestion prediction using Machine Learning
+- Cloud-based traffic data storage
+- Advanced traffic analytics dashboard
+- Real-time database integration
+- IoT-based physical traffic signal integration
+- Mobile application for traffic monitoring
+- Deployment on cloud infrastructure
+
+---
+
+## 🎓 Academic Project
+
 This project was developed as a Final Year B.Tech Project in:
-Computer Science and Engineering (Artificial Intelligence & Machine Learning)
+
+**Computer Science and Engineering (Artificial Intelligence & Machine Learning)**
 
 The project demonstrates the practical application of:
-Artificial Intelligence
-Computer Vision
-Python Programming
-Web Development
-Traffic Management Logic
-Real-Time Monitoring Concepts
 
-👨‍💻 Author
-Yogeshwar Tribhuvan
+- Artificial Intelligence
+- Computer Vision
+- Python Programming
+- Web Development
+- Traffic Management Logic
+- Real-Time Monitoring Concepts
+
+---
+
+## 👨‍💻 Author
+
+**Yogeshwar Tribhuvan**
+
 Aspiring Data Analyst | Python | SQL | Excel | Power BI | Data Visualization | Machine Learning
 
-⭐ Support
+---
+
+## ⭐ Support
+
 If you find this project useful or interesting, consider giving the repository a star.
