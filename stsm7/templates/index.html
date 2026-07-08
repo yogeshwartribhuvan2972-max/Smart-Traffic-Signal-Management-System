@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Traffic SCADA</title>
+
+<style>
+    body {
+        margin: 0;
+        background: #111;
+        color: white;
+        font-family: Arial;
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    .sidebar {
+        width: 110px;
+        background: #1c1c1c;
+        padding: 8px;
+        border-right: 2px solid #444;
+    }
+
+    .menu-btn {
+        width: 100%;
+        padding: 6px;
+        margin-bottom: 6px;
+        background: #333;
+        border: none;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 13px;
+    }
+    .menu-btn:hover { background: #555; }
+
+    .content {
+        flex: 1;
+        padding: 8px;
+        overflow: hidden;
+    }
+
+    .two-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px;
+        height: 100%;
+    }
+
+   .grid-2x2{
+    width:100%;
+    height:88%;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    grid-template-rows:1fr 1fr;
+    gap:3px;
+    }
+
+    .video-box {
+        background: black;
+        border: 1px solid #444;
+        border-radius: 8px;
+        overflow: hidden;
+        height: 92%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .video-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .scada-box {
+        background: #1d1d1d;
+        border: 1px solid #444;
+        border-radius: 8px;
+        padding: 4px;
+        display: grid;
+        grid-template-rows: auto 1fr 1fr 1fr;
+        place-items: center;
+        height: 90%;
+    }
+
+    .title {
+        font-size: 14px;
+        color: #0ff;
+        margin-bottom: 2px;
+    }
+
+    .signal {
+        width: 70px;
+        background: #000;
+        padding: 4px;
+        border-radius: 8px;
+        border: 1px solid #555;
+        text-align: center;
+    }
+
+    .light {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        margin: 3px auto;
+        opacity: 0.25;
+    }
+
+    .on { opacity: 1 !important; box-shadow: 0 0 6px white; }
+
+    .red { background: red; }
+    .yellow { background: yellow; }
+    .green { background: #00ff00; }
+
+    .tag {
+        background: #333;
+        padding: 3px 6px;
+        border-radius: 4px;
+        font-size: 13px;
+        font-weight: bold;
+    }
+
+    /* 🌟 Modern Center Modal */
+    #modeModal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 260px;
+        background: rgba(20,20,20,0.95);
+        border: 2px solid #0ff;
+        padding: 20px;
+        text-align: center;
+        border-radius: 10px;
+        display: none;
+        box-shadow: 0 0 15px #0ff;
+        z-index: 999;
+    }
+
+    #modeModal h3 {
+        margin: 0;
+        color: #0ff;
+        font-size: 18px;
+    }
+
+    #modeModal p {
+        font-size: 13px;
+        color: #aaa;
+    }
+
+
+.control-room{
+    width:100%;
+    height:100%;
+}
+
+.control-room .video-box{
+    width:100%;
+    height:100%;
+    background:black;
+    border:1px solid #444;
+    border-radius:8px;
+    overflow:hidden;
+}
+
+.control-room .video-box img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+}
+.manual-row{
+    display:flex;
+    gap:3px;
+    margin-top:4px;
+}
+
+.mini-btn{
+    flex:1;
+    height:28px;
+    border:none;
+    border-radius:4px;
+    background:#444;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+
+    <!-- Single Junctions -->
+    <button class="menu-btn" onclick="loadView('A')">Junction A</button>
+    <button class="menu-btn" onclick="loadView('B')">Junction B</button>
+    <button class="menu-btn" onclick="loadView('C')">Junction C</button>
+
+    <hr style="border-color:#444;">
+
+    <!-- Combined Junctions -->
+    <button class="menu-btn" onclick="loadView('AB')">A & B</button>
+    <button class="menu-btn" onclick="loadView('BC')">B & C</button>
+    <button class="menu-btn" onclick="loadView('AC')">A & C</button>
+
+    <hr style="border-color:#444; margin-top:10px;">
+
+<button class="menu-btn" onclick="loadView('CONTROL')">
+    Control Room
+</button>
+
+<button class="menu-btn"
+        style="background:#006600;"
+        onclick="setMode('independent')">
+    Independent Mode
+</button>
+
+<button class="menu-btn"
+        style="background:#663300;"
+        onclick="setMode('coordinated')">
+    Coordinated Mode
+</button>
+
+<button class="menu-btn"
+        style="background:#004466;"
+        onclick="setMode('manual')">
+    Manual Coordinated
+</button>
+
+<div class="manual-row">
+    <button class="mini-btn" onclick="manualLane('north')">N</button>
+    <button class="mini-btn" onclick="manualLane('south')">S</button>
+    <button class="mini-btn" onclick="manualLane('east')">E</button>
+    <button class="mini-btn" onclick="manualLane('west')">W</button>
+</div>
+</div>   <!-- sidebar close -->
+
+
+<!-- MAIN VIEW -->
+<div class="content" id="mainView">
+    <h2 style="color:#666; text-align:center; margin-top:20%;">Select Junction</h2>
+</div>
+
+<!-- 🌟 Modern Modal -->
+<div id="modeModal">
+    <h3 id="modalTitle"></h3>
+    <p>Mode Activated</p>
+</div>
+
+<script>
+
+/* ---------------- MODAL FUNCTION ---------------- */
+function showModal(text){
+    let m = document.getElementById("modeModal");
+    document.getElementById("modalTitle").innerText = text;
+
+    m.style.display = "block";
+    setTimeout(()=>{ m.style.display = "none"; }, 1600);
+}
+
+/* --------------- MODE SWITCH --------------------- */
+let currentMode = "independent";
+
+function setMode(mode){
+
+    currentMode = mode;
+
+    fetch(`/set_mode/${mode}`);
+
+    showModal(mode.toUpperCase());
+}
+function manualLane(lane){
+
+    if(currentMode !== "manual"){
+        alert("Enable Manual Coordinated First");
+        return;
+    }
+
+    fetch(`/manual_lane/${lane}`)
+        .then(r => r.json())
+        .then(data => {
+            console.log(data);
+        });
+
+    showModal("MANUAL " + lane.toUpperCase());
+}
+/* ----------------------- SCADA ---------------------- */
+function scada(id){
+    return `
+        <div class='scada-box'>
+            <div class='title'>Junction ${id}</div>
+
+            <div class="signal">
+                <div class="title">NORTH</div>
+                <div class="light red" id="${id}-north-red"></div>
+                <div class="light yellow" id="${id}-north-yellow"></div>
+                <div class="light green" id="${id}-north-green"></div>
+                <span class="tag" id="${id}-north-count">0</span>
+                <span class="tag" id="${id}-north-timer">0s</span>
+            </div>
+
+            <div style="display:flex; gap:15px;">
+                <div class="signal">
+                    <div class="title">WEST</div>
+                    <div class="light red" id="${id}-west-red"></div>
+                    <div class="light yellow" id="${id}-west-yellow"></div>
+                    <div class="light green" id="${id}-west-green"></div>
+                    <span class="tag" id="${id}-west-count">0</span>
+                    <span class="tag" id="${id}-west-timer">0s</span>
+                </div>
+
+                <div class="signal">
+                    <div class="title">EAST</div>
+                    <div class="light red" id="${id}-east-red"></div>
+                    <div class="light yellow" id="${id}-east-yellow"></div>
+                    <div class="light green" id="${id}-east-green"></div>
+                    <span class="tag" id="${id}-east-count">0</span>
+                    <span class="tag" id="${id}-east-timer">0s</span>
+                </div>
+            </div>
+
+            <div class="signal">
+                <div class="title">SOUTH</div>
+                <div class="light red" id="${id}-south-red"></div>
+                <div class="light yellow" id="${id}-south-yellow"></div>
+                <div class="light green" id="${id}-south-green"></div>
+                <span class="tag" id="${id}-south-count">0</span>
+                <span class="tag" id="${id}-south-timer">0s</span>
+            </div>
+        </div>
+    `;
+}
+/* ----------------------- controll room ---------------------- */
+
+function controlRoom(){
+    return `
+        <div class="control-room">
+
+            <div class="video-box">
+                <img src="/video_control">
+            </div>
+
+        </div>
+    `;
+}
+/* ---------------- SINGLE VIEW ---------------- */
+function singleView(id){
+    return `
+        <div class='two-col'>
+
+            <div class='grid-2x2'>
+
+                <div>
+                    <div class='title'>NORTH LANE</div>
+                    <div class='video-box'>
+			<img src="/video/${id}/north">
+			
+                    </div>
+                </div>
+
+                <div>
+                    <div class='title'>EAST LANE</div>
+                    <div class='video-box'>
+			<img src="/video/${id}/east">
+			
+                    </div>
+                </div>
+
+                <div>
+                    <div class='title'>WEST LANE</div>
+                    <div class='video-box'>
+			<img src="/video/${id}/west">
+			
+                    </div>
+                </div>
+
+                <div>
+                    <div class='title'>SOUTH LANE</div>
+                    <div class='video-box'>
+			<img src="/video/${id}/south">
+                    </div>
+                </div>
+
+            </div>
+
+            ${scada(id)}
+
+        </div>
+    `;
+}
+/* ---------------- COMBINED VIEW ---------------- */
+function combined(a,b){
+    return `
+        <div class='grid-2x2'>
+
+            <div class='video-box'>
+                <img src="/video_grid/${a}">
+            </div>
+
+            ${scada(a)}
+
+            <div class='video-box'>
+                <img src="/video_grid/${b}">
+            </div>
+
+            ${scada(b)}
+
+        </div>
+    `;
+}
+/* ---------------- VIEW LOADER ---------------- */
+function loadView(v){
+
+    const mainView = document.getElementById("mainView");
+
+    const activeImages = mainView.querySelectorAll("img");
+
+    activeImages.forEach(img=>{
+        img.src="";
+    });
+
+    if(v==="A") mainView.innerHTML = singleView("A");
+    if(v==="B") mainView.innerHTML = singleView("B");
+    if(v==="C") mainView.innerHTML = singleView("C");
+
+    if(v==="AB") mainView.innerHTML = combined("A","B");
+    if(v==="BC") mainView.innerHTML = combined("B","C");
+    if(v==="AC") mainView.innerHTML = combined("A","C");
+
+    if(v==="CONTROL") mainView.innerHTML = controlRoom();
+}
+/* ---------------- REAL-TIME UPDATE -------------- */
+setInterval(()=>{
+    fetch("/status")
+        .then(r=>r.json())
+        .then(data=>{
+            Object.keys(data).forEach(id=>{
+                let d = data[id];
+
+                ["north","south","east","west"].forEach(dir=>{
+                    let r = document.getElementById(`${id}-${dir}-red`);
+		    let y = document.getElementById(`${id}-${dir}-yellow`);
+		    let g = document.getElementById(`${id}-${dir}-green`);
+
+		    if(!r || !g || !y) return;
+
+		    r.classList.remove("on");
+		    y.classList.remove("on");
+   		    g.classList.remove("on");
+
+		    if(d.signal[dir] === "red")
+    			r.classList.add("on");
+
+		    if(d.signal[dir] === "yellow")
+    			y.classList.add("on");
+
+		    if(d.signal[dir] === "green")
+    			g.classList.add("on");
+
+                    document.getElementById(`${id}-${dir}-count`).innerText = d.count[dir];
+                    document.getElementById(`${id}-${dir}-timer`).innerText = d.timer + "s";
+                });
+            });
+        });
+}, 600);
+
+</script>
+
+</body>
+</html>
