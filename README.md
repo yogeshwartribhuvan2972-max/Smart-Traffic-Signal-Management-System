@@ -235,7 +235,23 @@ http://127.0.0.1:5000
 ```
 
 ---
+---
 
+## 📸 Project Screenshots
+
+### 🚦 Traffic Control Room
+
+![Traffic Control Room](controlroom.png)
+
+### 🔄 Coordinated Mode
+
+![Coordinated Mode](coordinate%20mode.png)
+
+### ⚡ Independent Mode
+
+![Independent Mode](independent%20mode.png)
+```
+---
 ## 🎥 Project Demo
 
 A demonstration of the complete working Smart Traffic Signal Management System is available on Google Drive.
